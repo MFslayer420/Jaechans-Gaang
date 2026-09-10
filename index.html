@@ -10,42 +10,102 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
     <style>
-        /* 초기화 및 기본 스타일 설정 */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Courier New", Courier, "돋움", dotum, sans-serif;
         }
 
         body {
-            background-color: #f0f2f5;
-            color: #262626;
+            background-color: #fce4ec;
+            color: #4a154b;
             display: flex;
             justify-content: center;
-            padding: 12px;
+            padding: 15px;
         }
 
-        /* 인스타그램 피드 형태 카드 컨테이너 */
-        .insta-card {
+        /* 2000s 레트로 브라우저 창 스타일 컨테이너 */
+        .retro-window {
             width: 100%;
-            max-width: 440px;
-            background: #ffffff;
-            border: 1px solid #dbdbdb;
+            max-width: 460px;
+            background: #fff0f5;
+            border: 2px solid #f48fb1;
             border-radius: 12px;
+            box-shadow: 4px 4px 15px rgba(244, 143, 177, 0.4);
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
         }
 
-        /* 인스타그램 상단 헤더 */
-        .insta-header {
+        /* 브라우저 상단 윈도우 타이틀바 및 툴바 */
+        .window-titlebar {
+            background: linear-gradient(to right, #f8bbd0, #f48fb1);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f06292;
+        }
+
+        .window-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #880e4f;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .win-btn {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid #c2185b;
+            background: #f8bbd0;
+            font-size: 9px;
+            line-height: 12px;
+            text-align: center;
+            color: #880e4f;
+            cursor: pointer;
+        }
+
+        /* 주소창 레트로 바 */
+        .browser-address-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #f8bbd0;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #ad1457;
+        }
+
+        .address-input {
+            flex: 1;
+            background: #fff8fa;
+            border: 1px solid #f48fb1;
+            border-radius: 10px;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            color: #880e4f;
+            outline: none;
+        }
+
+        /* 헤더 프로필 영역 */
+        .user-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 10px 14px;
-            border-bottom: 1px solid #efefef;
+            background-color: #fff8fa;
+            border-bottom: 1px dashed #f48fb1;
         }
 
         .user-info {
@@ -55,153 +115,106 @@
         }
 
         .profile-ring {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            background: #f48fb1;
             padding: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px dashed #c2185b;
         }
 
         .profile-pic {
             width: 100%;
             height: 100%;
-            background: #cfcfcf;
+            background: #ffe4e8;
             border-radius: 50%;
-            border: 2px solid #ffffff;
-        }
-
-        .username-container {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
 
         .username {
-            font-weight: 600;
+            font-weight: bold;
             font-size: 0.9rem;
-            color: #262626;
+            color: #880e4f;
         }
 
         .sub-username {
             font-size: 0.75rem;
-            color: #8e8e8e;
+            color: #ad1457;
         }
 
-        .more-options {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #262626;
-            cursor: pointer;
-        }
-
-        /* 인스타그램 메인 이미지/카메라 영역 */
-        .insta-media-container {
+        /* 메인 미디어 영역 */
+        .media-container {
             width: 100%;
             aspect-ratio: 1 / 1;
-            background-color: #eef1f5;
+            background-color: #fff;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border-bottom: 1px solid #f8bbd0;
         }
 
-        .insta-media-container canvas, 
-        .insta-media-container img {
+        .media-container canvas, 
+        .media-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
         .placeholder-text {
-            color: #8e8e8e;
+            color: #f06292;
             font-size: 0.85rem;
             text-align: center;
             padding: 20px;
             z-index: 1;
         }
 
-        /* [1번 & 3번 구상 반영] 스캔 직사각형 오버레이 스타일 */
+        /* 레트로 스캔 프레임 오버레이 */
         .scan-overlay {
             position: absolute;
             top: 8%;
             left: 8%;
             width: 84%;
             height: 84%;
-            border: 2px dashed rgba(255, 255, 255, 0.7);
-            border-radius: 12px;
+            border: 2px dashed #f48fb1;
+            border-radius: 16px;
             pointer-events: none;
-            box-sizing: border-box;
             display: flex;
             align-items: flex-start;
-            justify-content: flex-start;
             padding: 8px;
             transition: all 0.2s ease-in-out;
             z-index: 10;
         }
 
-        /* 타깃 물품 감지 시 감지 프레임 강조 표시 */
         .scan-overlay.detected {
-            border: 4px solid #0095f6;
-            background-color: rgba(0, 149, 246, 0.12);
-            box-shadow: 0 0 15px rgba(0, 149, 246, 0.4);
+            border: 3px solid #ec407a;
+            background-color: rgba(244, 143, 177, 0.15);
+            box-shadow: 0 0 12px rgba(236, 64, 122, 0.4);
         }
 
-        /* 스캔 오버레이 상단 물품 라벨 */
         .scan-label {
-            background-color: #0095f6;
+            background-color: #f06292;
             color: #ffffff;
             font-size: 0.8rem;
             font-weight: bold;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 10px;
             display: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* 하단 액션 아이콘 바 */
-        .insta-action-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px 4px 12px;
-        }
-
-        .left-icons {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: #262626;
-        }
-
-        .icon-btn.heart svg {
-            fill: #ed4956;
-        }
-
-        /* 제어 버튼 및 파일 선택 영역 */
+        /* 제어 버튼 영역 */
         .controls-area {
-            padding: 8px 12px;
-            border-bottom: 1px solid #efefef;
+            padding: 10px 12px;
+            background-color: #fff8fa;
+            border-bottom: 1px solid #f8bbd0;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
         .btn-group {
@@ -209,102 +222,84 @@
             gap: 6px;
         }
 
-        .action-btn {
+        .action-btn, .file-upload-label {
             flex: 1;
             padding: 8px;
             font-size: 0.8rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
+            font-weight: bold;
+            border: 1px solid #f48fb1;
+            border-radius: 15px;
             cursor: pointer;
-            min-height: 38px;
+            text-align: center;
+            background: #ffffff;
+            color: #ad1457;
+            box-shadow: 1px 2px 4px rgba(244, 143, 177, 0.3);
+            transition: all 0.1s;
         }
 
-        .btn-start {
-            background-color: #0095f6;
-            color: #ffffff;
-        }
-
-        .btn-start:hover {
-            background-color: #1877f2;
-        }
-
-        .btn-stop {
-            background-color: #8e8e8e;
-            color: #ffffff;
+        .action-btn:hover, .file-upload-label:hover {
+            background: #fce4ec;
         }
 
         .action-btn:disabled {
-            background-color: #e4e6eb;
-            color: #bcc0c4;
+            background-color: #f8f8f8;
+            color: #d1c4e9;
+            border-color: #e0e0e0;
             cursor: not-allowed;
-        }
-
-        .file-upload-label {
-            display: block;
-            text-align: center;
-            background-color: #fafafa;
-            border: 1px solid #dbdbdb;
-            color: #262626;
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            min-height: 38px;
-            line-height: 22px;
+            box-shadow: none;
         }
 
         input[type="file"] {
             display: none;
         }
 
-        /* 본문 내용 및 상태 표기 영역 */
-        .insta-content {
-            padding: 10px 12px 14px 12px;
+        /* 본문 내용 및 결과 영역 */
+        .content-area {
+            padding: 12px;
             font-size: 0.85rem;
+            background-color: #fff0f5;
         }
 
         .status-box {
             font-size: 0.8rem;
-            color: #0095f6;
-            font-weight: 500;
+            color: #ec407a;
+            font-weight: bold;
             margin-bottom: 8px;
-            min-height: 18px;
+            text-align: center;
         }
 
         .error-status {
-            color: #ed4956 !important;
-            font-weight: 600;
+            color: #d81b60 !important;
         }
 
         .top-prediction-box {
-            background-color: #f0f7ff;
-            border: 1px solid #cce5ff;
-            border-radius: 6px;
-            padding: 8px;
-            margin-bottom: 10px;
+            background-color: #ffffff;
+            border: 1px solid #f48fb1;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
             text-align: center;
         }
 
         .top-title {
             font-size: 0.75rem;
-            color: #0056b3;
+            color: #ad1457;
         }
 
         .top-value {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #0095f6;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #d81b60;
+            margin-top: 2px;
         }
 
         .disclaimer {
             font-size: 0.7rem;
-            color: #8e8e8e;
-            margin-top: 2px;
+            color: #f06292;
+            margin-top: 4px;
         }
 
-        /* 클래스별 가로 막대 그래프 */
+        /* 확률 프로그레스 바 */
         .class-bar-container {
             display: flex;
             flex-direction: column;
@@ -322,137 +317,124 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.75rem;
-            color: #262626;
+            color: #880e4f;
         }
 
         .bar-bg {
             width: 100%;
-            height: 8px;
-            background-color: #efefef;
-            border-radius: 4px;
+            height: 10px;
+            background-color: #ffe4e8;
+            border-radius: 5px;
+            border: 1px solid #f8bbd0;
             overflow: hidden;
         }
 
         .bar-fill {
             height: 100%;
-            background-color: #0095f6;
+            background: linear-gradient(to right, #f48fb1, #ec407a);
             width: 0%;
             transition: width 0.2s ease-in-out;
         }
 
-        /* 정보 및 본문 텍스트 */
+        /* 정보 캡션 영역 */
         .caption-section {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            font-size: 0.8rem;
-            color: #262626;
-            border-top: 1px solid #efefef;
-            padding-top: 8px;
-        }
-
-        .caption-row {
-            line-height: 1.4;
+            gap: 5px;
+            font-size: 0.78rem;
+            color: #880e4f;
+            border-top: 1px dashed #f48fb1;
+            padding-top: 10px;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
         }
 
         .bold-text {
-            font-weight: 600;
+            font-weight: bold;
+            color: #c2185b;
         }
 
         .meta-info {
-            font-size: 0.75rem;
-            color: #8e8e8e;
+            font-size: 0.7rem;
+            color: #f06292;
             margin-top: 6px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="insta-card">
-    <!-- 인스타그램 헤더 영역 -->
-    <div class="insta-header">
-        <div class="user-info">
-            <div class="profile-ring">
-                <div class="profile-pic"></div>
-            </div>
-            <div class="username-container">
-                <span class="username">찾아라 학급물품!!!</span>
-                <span class="sub-username">김지윤과 아이 (김재찬, 김지윤)</span>
-            </div>
+<div class="retro-window">
+    <!-- 브라우저 타이틀바 -->
+    <div class="window-titlebar">
+        <div class="window-title">
+            <span>🌸</span> 찾아라 학급물품!!!
         </div>
-        <div class="more-options">⋮</div>
+        <div class="window-controls">
+            <div class="win-btn">_</div>
+            <div class="win-btn">□</div>
+            <div class="win-btn">×</div>
+        </div>
     </div>
 
-    <!-- 인스타그램 메인 미디어 영역 (카메라 / 이미지 미리보기 및 직사각형 스캔 오버레이) -->
-    <div class="insta-media-container" id="media-container">
-        <span class="placeholder-text" id="placeholder-text">카메라 시작 버튼을 누르거나<br>사진 파일을 선택해 주세요</span>
+    <!-- 주소 표시줄 -->
+    <div class="browser-address-bar">
+        <span>http://www.google.com/</span>
+        <input type="text" class="address-input" value="a hello kitty life..." readonly>
+    </div>
+
+    <!-- 유저 헤더 -->
+    <div class="user-header">
+        <div class="user-info">
+            <div class="profile-ring">
+                <div class="profile-pic">🎀</div>
+            </div>
+            <div>
+                <div class="username">찾아라 학급물품!!!</div>
+                <div class="sub-username">김지윤과 아이 (김재찬, 김지윤)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 비주얼/카메라 영역 -->
+    <div class="media-container" id="media-container">
+        <span class="placeholder-text" id="placeholder-text">카메라 시작 버튼을 누르거나<br>사진 파일을 선택해 주세요 🌷</span>
         <img id="uploaded-image" style="display: none;" alt="업로드 이미지">
         
-        <!-- [1번 & 3번 구상 반영] 스캔 직사각형 레이어 -->
         <div id="scan-overlay" class="scan-overlay">
             <span id="scan-label" class="scan-label">포착됨</span>
         </div>
     </div>
 
-    <!-- 아이콘 바 -->
-    <div class="insta-action-bar">
-        <div class="left-icons">
-            <button class="icon-btn heart" aria-label="좋아요">
-                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            </button>
-            <button class="icon-btn" aria-label="댓글">
-                <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-            </button>
-            <button class="icon-btn" aria-label="공유">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
-        </div>
-        <button class="icon-btn" aria-label="북마크">
-            <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-        </button>
-    </div>
-
-    <!-- 기능 컨트롤 버튼 영역 -->
+    <!-- 컨트롤 버튼 -->
     <div class="controls-area">
         <div class="btn-group">
-            <button id="btn-start" class="action-btn btn-start" onclick="startWebcam()" disabled>카메라 시작</button>
-            <button id="btn-stop" class="action-btn btn-stop" onclick="stopWebcam()" disabled>카메라 중지</button>
+            <button id="btn-start" class="action-btn" onclick="startWebcam()" disabled>카메라 시작</button>
+            <button id="btn-stop" class="action-btn" onclick="stopWebcam()" disabled>카메라 중지</button>
         </div>
-        <label for="image-upload" class="file-upload-label">사진 파일 선택하여 분류하기</label>
+        <label for="image-upload" class="file-upload-label">🌸 사진 파일 선택하여 분류하기 🌸</label>
         <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload(event)">
     </div>
 
-    <!-- 결과 및 설명 영역 -->
-    <div class="insta-content">
+    <!-- 결과 디스플레이 영역 -->
+    <div class="content-area">
         <div id="status-message" class="status-box">모델 불러오는 중...</div>
 
-        <!-- 가장 높은 예측 결과 -->
         <div class="top-prediction-box">
             <div class="top-title">가장 높은 확률의 예측 결과</div>
             <div id="top-result" class="top-value">-</div>
             <div class="disclaimer">* 가장 높은 확률이 반드시 정답은 아닐 수 있습니다.</div>
         </div>
 
-        <!-- 클래스별 확률 바 -->
         <div class="class-bar-container" id="label-container"></div>
 
-        <!-- 프로젝트 정보 캡션 -->
         <div class="caption-section">
-            <div class="caption-row">
-                <span class="bold-text">해결하려는 문제:</span> 물건이 영상이나 사진속에 제시 되지 않을 경우 찾을 수 없음
-            </div>
-            <div class="caption-row">
-                <span class="bold-text">주요 사용자:</span> 모든 학생 및 교사
-            </div>
-            <div class="caption-row">
-                <span class="bold-text">인식 대상 클래스:</span> <span id="target-classes">-</span>
-            </div>
-            <div class="caption-row">
-                <span class="bold-text">모델의 한계:</span> 거리가 멀면 인식하지 못할 수도 있음
-            </div>
-            <div class="caption-row">
-                <span class="bold-text">사람이 확인해야 할 부분:</span> output으로 제시된 화면에서 물품의 위치 확인
-            </div>
+            <div><span class="bold-text">해결하려는 문제:</span> 물건이 영상이나 사진속에 제시 되지 않을 경우 찾을 수 없음</div>
+            <div><span class="bold-text">주요 사용자:</span> 모든 학생 및 교사</div>
+            <div><span class="bold-text">인식 대상 클래스:</span> <span id="target-classes">-</span></div>
+            <div><span class="bold-text">모델의 한계:</span> 거리가 멀면 인식하지 못할 수도 있음</div>
+            <div><span class="bold-text">사람이 확인해야 할 부분:</span> output으로 제시된 화면에서 물품의 위치 확인</div>
             <div class="meta-info">
                 프로젝트: 찾아라 학급물품!!! | 팀명: 김지윤과 아이 (김재찬, 김지윤)
             </div>
@@ -470,7 +452,6 @@
 
     window.addEventListener('DOMContentLoaded', initModel);
 
-    // 모델 및 메타데이터 초기화
     async function initModel() {
         const statusEl = document.getElementById('status-message');
         const modelPath = MODEL_URL + "model.json";
@@ -518,7 +499,6 @@
         }
     }
 
-    // 카메라 시작
     async function startWebcam() {
         if (isWebcamRunning) return;
 
@@ -541,7 +521,6 @@
             const oldCanvas = mediaContainer.querySelector('canvas');
             if (oldCanvas) mediaContainer.removeChild(oldCanvas);
             
-            // 캔버스를 오버레이보다 아래에 삽입
             mediaContainer.insertBefore(webcam.canvas, document.getElementById('scan-overlay'));
 
             document.getElementById('btn-start').disabled = true;
@@ -564,7 +543,6 @@
         }
     }
 
-    // 카메라 중지
     function stopWebcam() {
         if (!isWebcamRunning && !webcam) return;
 
@@ -591,7 +569,6 @@
         document.getElementById('status-message').innerText = "카메라가 중지되었습니다.";
     }
 
-    // 파일 업로드 처리
     async function handleImageUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -643,7 +620,6 @@
         resetOverlay();
     }
 
-    // 오버레이 상태 리셋
     function resetOverlay() {
         const overlay = document.getElementById('scan-overlay');
         const label = document.getElementById('scan-label');
@@ -651,7 +627,6 @@
         label.style.display = 'none';
     }
 
-    // 예측 처리 함수 (직사각형 및 물품 라벨 오버레이 로직 포함)
     async function predict(imageSource) {
         if (!model) return;
 
@@ -676,11 +651,9 @@
             const topPercent = Math.round(highestProb * 100);
             document.getElementById('top-result').innerText = `${topClass} (${topPercent}%)`;
 
-            // --- [1번 & 3번 기능] 예측 결과에 따른 오버레이 제어 ---
             const overlay = document.getElementById('scan-overlay');
             const label = document.getElementById('scan-label');
 
-            // 70% 이상의 확률로 감지되면 직사각형을 강조하고 물품 라벨을 표시
             if (highestProb >= 0.7) {
                 overlay.classList.add('detected');
                 label.style.display = 'inline-block';
